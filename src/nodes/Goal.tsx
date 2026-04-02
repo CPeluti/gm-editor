@@ -1,38 +1,97 @@
-import { Handle, NodeResizer, Position, useConnection, useUpdateNodeInternals } from '@xyflow/react';
+import {
+  Handle,
+  NodeResizer,
+  Position,
+  useConnection,
+  useUpdateNodeInternals,
+} from '@xyflow/react';
 import type { Node, NodeProps } from '@xyflow/react';
 import useStore from '../store';
 import { useEffect } from 'react';
 
-type GoalNode = Node<{ label: string, goalType: 'achieve' | 'query' | 'perform'}, 'text'>;
- 
-export default function GoalNode({ data, id, selected }: NodeProps<GoalNode>) {
+type GoalNode = Node<
+  { label: string; GoalType: 'Achieve' | 'Query' | 'Perform' },
+  'text'
+>;
+
+export default function GoalNode({
+  data,
+  id,
+  selected,
+}: NodeProps<GoalNode>) {
   const updateNodeInternals = useUpdateNodeInternals();
-  const currentMode = useStore(state => state.currentMode);
+  const currentMode = useStore((state) => state.currentMode);
   const connection = useConnection();
   const isTarget = connection.inProgress && connection.fromNode.id !== id;
-  useEffect(() => {updateNodeInternals(id)}, [currentMode])
-  let color = "white";
-  switch(data.goalType){
-    case 'achieve': 
-      color = "green";
+  useEffect(() => {
+    updateNodeInternals(id);
+  }, [currentMode]);
+  let color = 'white';
+  switch (data.GoalType) {
+    case 'Achieve':
+      color = 'green';
       break;
-    case 'query':
-      color = "orange";
-      break; 
+    case 'Query':
+      color = 'orange';
+      break;
+    default:
+      color = 'white';
+      break;
   }
-  return <>
-    <NodeResizer
-      color="#ff0071"
-      isVisible={selected}
-    />
-        {(!connection.inProgress) && (
-          <Handle className='customHandle' position={Position.Right} type='source' isConnectableStart={currentMode === 'edge'} />
+  return (
+    <>
+      <NodeResizer color="#ff0071" isVisible={selected} />
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+        {!connection.inProgress && (
+          <Handle
+            className="customHandle"
+            position={Position.Top}
+            type="source"
+            isConnectableStart={currentMode === 'edge'}
+          />
         )}
-        <div>
-        {data.label}
+        <svg
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+          }}
+          viewBox="0 0 130 36"
+          preserveAspectRatio="none"
+        >
+          <polygon
+            points="0,18 15,0 115,0 130,18 115,36 15,36"
+            fill={color}
+            stroke="black"
+            strokeWidth="2"
+          />
+        </svg>
+
+        <div
+          style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+          }}
+        >
+          <span>{data.label}</span>
         </div>
         {(!connection.inProgress || isTarget) && (
-          <Handle className="customHandle" position={Position.Left} type="target" isConnectableStart={false} />
+          <Handle
+            className="customHandle"
+            position={Position.Bottom}
+            type="target"
+            isConnectableStart={false}
+          />
         )}
-  </>
+      </div>
+    </>
+  );
 }
+
+<div></div>;
