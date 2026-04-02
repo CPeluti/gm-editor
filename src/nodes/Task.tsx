@@ -14,7 +14,7 @@ type GoalNode = Node<
   'text'
 >;
 
-export default function GoalNode({
+export default function TaskNode({
   data,
   id,
   selected,
@@ -40,8 +40,8 @@ export default function GoalNode({
   }
   return (
     <>
-      <NodeResizer color="#ff0071" isVisible={selected} minHeight={60} minWidth={150}/>
-      <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}>
+      <NodeResizer color="#ff0071" isVisible={selected} />
+      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
         {!connection.inProgress && (
           <Handle
             className="customHandle"
@@ -51,11 +51,22 @@ export default function GoalNode({
           />
         )}
         <svg
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+          }}
           viewBox="0 0 130 36"
           preserveAspectRatio="none"
         >
-          <rect x="0" y="0" vectorEffect="non-scaling-stroke" width="100%" height="100%" rx="20" fill={color} stroke="black" strokeWidth="2" />
+          <polygon
+            points="0,18 15,0 115,0 130,18 115,36 15,36"
+            fill={color}
+            stroke="black"
+            strokeWidth="2"
+          />
         </svg>
 
         <div
@@ -67,7 +78,7 @@ export default function GoalNode({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: 20,
+            padding: 10,
           }}
         >
           <span>{data.label}</span>
@@ -84,3 +95,5 @@ export default function GoalNode({
     </>
   );
 }
+
+<div></div>;

@@ -76,7 +76,11 @@ export function parseNodeToReactFlow(
       id: node.id,
       type: node.type,
       data: { label: node.text, ...node.customProperties },
-      position: { x: node.x / 2, y: node.y / 2 },
+      position: { x: node.x *2, y: node.y *2 },
+      style: {
+        //24 é o font size
+        width: node.text.length*24>300? 300 : node.text.length*24 
+      }
     };
     if (parentId) parsedNode.parentId = parentId;
     return parsedNode;

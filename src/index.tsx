@@ -10,6 +10,7 @@ import {
 import "@xyflow/react/dist/style.css";
 import "./App.css";
 import GoalNode from "./nodes/Goal.tsx";
+import TaskNode from "./nodes/Task.tsx";
 
 import { shallow } from "zustand/shallow";
 import useStore, { RFState } from "./store";
@@ -19,6 +20,7 @@ import FloatingConnectionLine from "./edges/FloatingConnectionLine.tsx";
 
 const nodeTypes = {
   "istar.Goal": GoalNode,
+  "istar.Task": TaskNode,
 };
 const edgeTypes = {
   floating: FloatingEdge,
