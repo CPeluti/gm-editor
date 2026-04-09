@@ -68,6 +68,7 @@ export default function GoalNode({
             alignItems: 'center',
             justifyContent: 'center',
             padding: 20,
+            fontSize: 12
           }}
         >
           <span>{data.label}</span>

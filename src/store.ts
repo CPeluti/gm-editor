@@ -100,7 +100,9 @@ const useStore = createWithEqualityFn<RFState>((set, get) => ({
     });
     const parsedNodes = [...actors, ...goals, ...tasks];
     set({ nodes: parsedNodes });
-    set({ edges: parsedGm.links });
+    set({ edges: parsedGm.links.map(el=>{
+      return {...el, markerEnd: {type: MarkerType.ArrowClosed}}
+    }) });
   },
 }));
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Node as FlowNode } from "@xyflow/react";
+import { Node as FlowNode, MarkerType } from "@xyflow/react";
 
 const NodeType = z.enum(["istar.Task", "istar.Goal", "istar.Actor"]);
 

@@ -15,15 +15,17 @@ import TaskNode from "./nodes/Task.tsx";
 import { shallow } from "zustand/shallow";
 import useStore, { RFState } from "./store";
 import Sidebar from "./ui/sidebar";
-import FloatingEdge from "./edges/FloatingEdge.tsx";
+import AndDecomposition from "./edges/AndDecomposition.tsx";
 import FloatingConnectionLine from "./edges/FloatingConnectionLine.tsx";
+import OrDecomposition from "./edges/OrDecomposition.tsx";
 
 const nodeTypes = {
   "istar.Goal": GoalNode,
   "istar.Task": TaskNode,
 };
 const edgeTypes = {
-  floating: FloatingEdge,
+  'istar.AndRefinementLink': AndDecomposition,
+  'istar.OrRefinementLink': OrDecomposition,
 };
 const selector = (state: RFState) => ({
   currentMode: state.currentMode,

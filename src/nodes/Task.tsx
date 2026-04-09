@@ -79,6 +79,7 @@ export default function TaskNode({
             alignItems: 'center',
             justifyContent: 'center',
             padding: 10,
+            fontSize: 12
           }}
         >
           <span>{data.label}</span>
