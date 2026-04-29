@@ -1,4 +1,4 @@
-import { ConnectionLineComponentProps, getBezierPath } from '@xyflow/react';
+import { ConnectionLineComponentProps, getBezierPath, InternalNode, Node } from '@xyflow/react';
 
 import { getEdgeParams } from '../utils/initialElements.ts';
 
@@ -13,18 +13,21 @@ function FloatingConnectionLine({
     return null;
   }
 
-  // Create a mock target node at the cursor position
-  const targetNode = {
-    id: 'connection-target',
-    measured: {
-      width: 1,
-      height: 1,
-    },
+  function createMockNode(x: number, y: number): InternalNode<Node> {
+  return {
+    id: "connection-target",
+    type: "default",
+    position: { x, y },
+    data: {},
+    measured: { width: 1, height: 1 },
     internals: {
-      positionAbsolute: { x: toX, y: toY },
+      positionAbsolute: { x, y },
     },
-  };
+  } as unknown as InternalNode<Node>;
+}
 
+  // Create a mock target node at the cursor position
+  const targetNode = createMockNode(toX, toY)
   const { sx, sy, tx, ty, sourcePos, targetPos } = getEdgeParams(
     fromNode,
     targetNode,
