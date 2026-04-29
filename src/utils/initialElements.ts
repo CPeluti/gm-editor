@@ -1,4 +1,4 @@
-import { Position, MarkerType, InternalNode, Node } from "@xyflow/react";
+import { Position, MarkerType, InternalNode, Node } from '@xyflow/react';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -31,7 +31,10 @@ function getNodeIntersection(
 }
 
 // returns the position (top,right,bottom or right) passed node compared to the intersection point
-function getEdgePosition(node: any, intersectionPoint: any) {
+function getEdgePosition(
+  node: InternalNode<Node>,
+  intersectionPoint: { x: number; y: number },
+) {
   const n = { ...node.internals.positionAbsolute, ...node };
   const nx = Math.round(n.x);
   const ny = Math.round(n.y);
@@ -41,13 +44,13 @@ function getEdgePosition(node: any, intersectionPoint: any) {
   if (px <= nx + 1) {
     return Position.Left;
   }
-  if (px >= nx + n.measured.width - 1) {
+  if (px >= nx + n.measured.width! - 1) {
     return Position.Right;
   }
   if (py <= ny + 1) {
     return Position.Top;
   }
-  if (py >= n.y + n.measured.height - 1) {
+  if (py >= n.y + n.measured.height! - 1) {
     return Position.Bottom;
   }
 
@@ -55,7 +58,10 @@ function getEdgePosition(node: any, intersectionPoint: any) {
 }
 
 // returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
-export function getEdgeParams(source: any, target: any) {
+export function getEdgeParams(
+  source: InternalNode<Node>,
+  target: InternalNode<Node>,
+) {
   const sourceIntersectionPoint = getNodeIntersection(source, target);
   const targetIntersectionPoint = getNodeIntersection(target, source);
 
@@ -77,7 +83,7 @@ export function initialElements() {
   const edges = [];
   const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
-  nodes.push({ id: "target", data: { label: "Target" }, position: center });
+  nodes.push({ id: 'target', data: { label: 'Target' }, position: center });
 
   for (let i = 0; i < 8; i++) {
     const degrees = i * (360 / 8);
@@ -85,13 +91,13 @@ export function initialElements() {
     const x = 250 * Math.cos(radians) + center.x;
     const y = 250 * Math.sin(radians) + center.y;
 
-    nodes.push({ id: `${i}`, data: { label: "Source" }, position: { x, y } });
+    nodes.push({ id: `${i}`, data: { label: 'Source' }, position: { x, y } });
 
     edges.push({
       id: `edge-${i}`,
-      target: "target",
+      target: 'target',
       source: `${i}`,
-      type: "floating",
+      type: 'floating',
       markerEnd: {
         type: MarkerType.Arrow,
       },

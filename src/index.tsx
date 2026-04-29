@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback } from 'react';
 import {
   ReactFlow,
   Background,
@@ -6,22 +6,22 @@ import {
   useReactFlow,
   Connection,
   MiniMap,
-} from "@xyflow/react";
-import "@xyflow/react/dist/style.css";
-import "./App.css";
-import GoalNode from "./nodes/Goal.tsx";
-import TaskNode from "./nodes/Task.tsx";
+} from '@xyflow/react';
+import '@xyflow/react/dist/style.css';
+import './App.css';
+import GoalNode from './nodes/Goal.tsx';
+import TaskNode from './nodes/Task.tsx';
 
-import { shallow } from "zustand/shallow";
-import useStore, { RFState } from "./store";
-import Sidebar from "./ui/sidebar";
-import AndDecomposition from "./edges/AndDecomposition.tsx";
-import FloatingConnectionLine from "./edges/FloatingConnectionLine.tsx";
-import OrDecomposition from "./edges/OrDecomposition.tsx";
+import { shallow } from 'zustand/shallow';
+import useStore, { RFState } from './store';
+import Sidebar from './ui/sidebar';
+import AndDecomposition from './edges/AndDecomposition.tsx';
+import FloatingConnectionLine from './edges/FloatingConnectionLine.tsx';
+import OrDecomposition from './edges/OrDecomposition.tsx';
 
 const nodeTypes = {
-  "istar.Goal": GoalNode,
-  "istar.Task": TaskNode,
+  'istar.Goal': GoalNode,
+  'istar.Task': TaskNode,
 };
 const edgeTypes = {
   'istar.AndRefinementLink': AndDecomposition,
@@ -36,6 +36,8 @@ const selector = (state: RFState) => ({
   addNode: state.addNode,
   addConnection: state.addConnection,
   loadGoalModel: state.loadGoalModel,
+  edgeType: state.edgeType,
+  setError: state.setError,
 });
 
 export default function Index() {
@@ -49,11 +51,12 @@ export default function Index() {
     currentMode,
     addConnection,
     loadGoalModel,
+    setError,
   } = useStore(selector, shallow);
 
   const onClick = useCallback(
     (event: React.MouseEvent) => {
-      if (currentMode !== "create") return;
+      if (currentMode !== 'create') return;
 
       addNode(screenToFlowPosition({ x: event.clientX, y: event.clientY }));
     },
@@ -61,7 +64,7 @@ export default function Index() {
   );
   const onConnect = useCallback(
     (connection: Connection) => {
-      if (currentMode === "edge") {
+      if (currentMode === 'edge') {
         addConnection(connection);
       }
     },
@@ -71,13 +74,20 @@ export default function Index() {
   return (
     <>
       <button onClick={() => loadGoalModel()}>teste</button>
+      <button
+        onClick={() =>
+          setError('9a952783-d786-409b-a5e7-039ab220442b', 'node', 'error')
+        }
+      >
+        teste2
+      </button>
       <div
         style={{
-          width: "100vw",
-          height: "100vh",
-          color: "black",
-          flexDirection: "row",
-          display: "flex",
+          width: '100vw',
+          height: '100vh',
+          color: 'black',
+          flexDirection: 'row',
+          display: 'flex',
         }}
       >
         <ReactFlow
@@ -90,10 +100,10 @@ export default function Index() {
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           connectionLineComponent={FloatingConnectionLine}
-          panOnDrag={currentMode !== "create"}
-          nodesConnectable={currentMode == "edge"}
+          panOnDrag={currentMode !== 'create'}
+          nodesConnectable={currentMode == 'edge'}
           fitView
-          deleteKeyCode={["Backspace", "Delete"]}
+          deleteKeyCode={['Backspace', 'Delete']}
         >
           <Background />
           <Controls />

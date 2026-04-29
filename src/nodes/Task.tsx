@@ -14,18 +14,14 @@ type GoalNode = Node<
   'text'
 >;
 
-export default function TaskNode({
-  data,
-  id,
-  selected,
-}: NodeProps<GoalNode>) {
+export default function TaskNode({ data, id, selected }: NodeProps<GoalNode>) {
   const updateNodeInternals = useUpdateNodeInternals();
   const currentMode = useStore((state) => state.currentMode);
   const connection = useConnection();
   const isTarget = connection.inProgress && connection.fromNode.id !== id;
   useEffect(() => {
     updateNodeInternals(id);
-  }, [currentMode]);
+  }, [currentMode, id, updateNodeInternals]);
   let color = 'white';
   switch (data.GoalType) {
     case 'Achieve':
@@ -79,7 +75,7 @@ export default function TaskNode({
             alignItems: 'center',
             justifyContent: 'center',
             padding: 10,
-            fontSize: 12
+            fontSize: 12,
           }}
         >
           <span>{data.label}</span>

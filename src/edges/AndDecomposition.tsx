@@ -1,7 +1,12 @@
-import { BaseEdge, EdgeProps, getBezierPath, MarkerType, useInternalNode } from "@xyflow/react";
+import {
+  BaseEdge,
+  EdgeProps,
+  getBezierPath,
+  useInternalNode,
+} from '@xyflow/react';
 
-import { getEdgeParams } from "../utils/initialElements.ts";
-function AndDecomposition({ id, source, target, markerEnd, style }: EdgeProps) {
+import { getEdgeParams } from '../utils/initialElements.ts';
+function AndDecomposition({ source, target, style }: EdgeProps) {
   const sourceNode = useInternalNode(source);
   const targetNode = useInternalNode(target);
 
@@ -22,28 +27,33 @@ function AndDecomposition({ id, source, target, markerEnd, style }: EdgeProps) {
     targetX: tx,
     targetY: ty,
   });
-  const styleCustom = {...style, stroke:"white", strokeWidth: 2}
+  const styleCustom = { ...style, stroke: 'white', strokeWidth: 2 };
   return (
     <>
       <svg style={{ position: 'absolute', top: 0, left: 0 }}>
         <defs>
-
           <marker
             id="and"
             orient="auto"
             overflow="visible"
-            markerUnits="userSpaceOnUse">
+            markerUnits="userSpaceOnUse"
+          >
             <path
               id="v-234"
               stroke="white"
               fill="none"
               transform="rotate(180)"
               d="m 10,-6 l 0,12"
-              strokeWidth="2"></path>
+              strokeWidth="2"
+            ></path>
           </marker>
         </defs>
       </svg>
-      <BaseEdge path={edgePath} markerEnd="url(#and)" style={styleCustom}></BaseEdge>
+      <BaseEdge
+        path={edgePath}
+        markerEnd="url(#and)"
+        style={styleCustom}
+      ></BaseEdge>
     </>
   );
 }

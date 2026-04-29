@@ -1,47 +1,56 @@
-import React from "react";
+import React from 'react';
 
-import { shallow } from "zustand/shallow";
-import useStore, { RFState } from "../store";
+import { shallow } from 'zustand/shallow';
+import useStore, { RFState } from '../store';
 
 const selector = (state: RFState) => ({
   currentMode: state.currentMode,
   toggleCreationMode: state.toggleCreationMode,
   toggleConnection: state.toggleConnection,
   nodeType: state.nodeType,
+  edgeType: state.edgeType,
 });
 
-export default () => {
-  const { currentMode, nodeType, toggleCreationMode, toggleConnection } =
-    useStore(selector, shallow);
+export default function Sidebar() {
+  const {
+    currentMode,
+    nodeType,
+    edgeType,
+    toggleCreationMode,
+    toggleConnection,
+  } = useStore(selector, shallow);
   return (
-    <aside className="text-white p-4">
-      <div className="description">
-        You can drag these nodes to the pane on the right.
-      </div>
+    <aside className="text-white p-4 flex flex-col gap-3">
       <button
-        onClick={() => toggleCreationMode("achieve")}
-        className={`dndnode input ${currentMode == "create" && nodeType == "achieve" ? "bg-green-300" : "bg-white"} text-black w-full h-10`}
+        onClick={() => toggleCreationMode('Achieve')}
+        className={`dndnode input ${currentMode == 'create' && nodeType == 'Achieve' ? 'bg-green-300' : 'bg-white'} text-black w-full h-10`}
       >
         Achieve
       </button>
       <button
-        onClick={() => toggleCreationMode("query")}
-        className={`dndnode input ${currentMode == "create" && nodeType == "query" ? "bg-green-300" : "bg-white"} text-black w-full h-10`}
+        onClick={() => toggleCreationMode('Query')}
+        className={`dndnode input ${currentMode == 'create' && nodeType == 'Query' ? 'bg-green-300' : 'bg-white'} text-black w-full h-10`}
       >
         Query
       </button>
       <button
-        onClick={() => toggleCreationMode("perform")}
-        className={`dndnode input ${currentMode == "create" && nodeType == "perform" ? "bg-green-300" : "bg-white"} text-black w-full h-10`}
+        onClick={() => toggleCreationMode('Perform')}
+        className={`dndnode input ${currentMode == 'create' && nodeType == 'Perform' ? 'bg-green-300' : 'bg-white'} text-black w-full h-10`}
       >
         Perform
       </button>
       <button
-        onClick={toggleConnection}
-        className={`dndnode input ${currentMode != "edge" ? "bg-white" : "bg-green-300"} text-black w-full h-10`}
+        onClick={() => toggleConnection('Or')}
+        className={`dndnode input ${currentMode == 'edge' && edgeType == 'Or' ? 'bg-green-300' : 'bg-white'} text-black w-full h-10`}
       >
-        Decomposition
+        Or Decomposition
+      </button>
+      <button
+        onClick={() => toggleConnection('And')}
+        className={`dndnode input ${currentMode == 'edge' && edgeType == 'And' ? 'bg-green-300' : 'bg-white'} text-black w-full h-10`}
+      >
+        And Decomposition
       </button>
     </aside>
   );
-};
+}

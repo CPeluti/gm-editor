@@ -10,22 +10,23 @@ import useStore from '../store';
 import { useEffect } from 'react';
 
 type GoalNode = Node<
-  { label: string; GoalType: 'Achieve' | 'Query' | 'Perform' },
+  {
+    label: string;
+    GoalType: 'Achieve' | 'Query' | 'Perform';
+    error?: 'none' | 'warning' | 'error';
+  },
   'text'
 >;
 
-export default function GoalNode({
-  data,
-  id,
-  selected,
-}: NodeProps<GoalNode>) {
+export default function GoalNode({ data, id, selected }: NodeProps<GoalNode>) {
   const updateNodeInternals = useUpdateNodeInternals();
   const currentMode = useStore((state) => state.currentMode);
+  const edgeType = useStore((state) => state.edgeType);
   const connection = useConnection();
   const isTarget = connection.inProgress && connection.fromNode.id !== id;
   useEffect(() => {
     updateNodeInternals(id);
-  }, [currentMode]);
+  }, [currentMode, edgeType, updateNodeInternals, id]);
   let color = 'white';
   switch (data.GoalType) {
     case 'Achieve':
@@ -40,22 +41,50 @@ export default function GoalNode({
   }
   return (
     <>
-      <NodeResizer color="#ff0071" isVisible={selected} minHeight={60} minWidth={150}/>
-      <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden'}}>
+      <NodeResizer
+        color="#ff0071"
+        isVisible={selected}
+        minHeight={60}
+        minWidth={150}
+      />
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
+          overflow: 'hidden',
+        }}
+      >
         {!connection.inProgress && (
           <Handle
-            className="customHandle"
+            className={`customHandle ${currentMode == 'edge' ? 'z-50' : '-z-1'}`}
             position={Position.Top}
             type="source"
-            isConnectableStart={currentMode === 'edge'}
+            isConnectableStart={true}
           />
         )}
         <svg
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            pointerEvents: 'none',
+          }}
           viewBox="0 0 130 36"
           preserveAspectRatio="none"
         >
-          <rect x="0" y="0" vectorEffect="non-scaling-stroke" width="100%" height="100%" rx="20" fill={color} stroke="black" strokeWidth="2" />
+          <rect
+            x="0"
+            y="0"
+            vectorEffect="non-scaling-stroke"
+            width="100%"
+            height="100%"
+            rx="20"
+            fill={color}
+            stroke="black"
+            strokeWidth="2"
+          />
         </svg>
 
         <div
@@ -68,14 +97,15 @@ export default function GoalNode({
             alignItems: 'center',
             justifyContent: 'center',
             padding: 20,
-            fontSize: 12
+            fontSize: 12,
           }}
         >
           <span>{data.label}</span>
+          <span>{data.error}</span>
         </div>
         {(!connection.inProgress || isTarget) && (
           <Handle
-            className="customHandle"
+            className="customHandle z-50"
             position={Position.Bottom}
             type="target"
             isConnectableStart={false}

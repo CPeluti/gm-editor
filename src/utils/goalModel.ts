@@ -1,7 +1,7 @@
-import { z } from "zod";
-import { Node as FlowNode, MarkerType } from "@xyflow/react";
+import { z } from 'zod';
+import { Node as FlowNode } from '@xyflow/react';
 
-const NodeType = z.enum(["istar.Task", "istar.Goal", "istar.Actor"]);
+const NodeType = z.enum(['istar.Task', 'istar.Goal', 'istar.Actor']);
 
 const CustomProperties = z
   .object({
@@ -28,7 +28,7 @@ const DisplayItem = z
 
 const Link = z.object({
   id: z.string(),
-  type: z.enum(["istar.AndRefinementLink", "istar.OrRefinementLink"]),
+  type: z.enum(['istar.AndRefinementLink', 'istar.OrRefinementLink']),
   source: z.string(),
   target: z.string(),
 });
@@ -76,16 +76,16 @@ export function parseNodeToReactFlow(
       id: node.id,
       type: node.type,
       data: { label: node.text, ...node.customProperties },
-      position: { x: node.x *2, y: node.y *2 },
+      position: { x: node.x * 2, y: node.y * 2 },
       style: {
         //24 é o font size
-        width: node.text.length*24>300? 300 : node.text.length*24 
-      }
+        width: node.text.length * 24 > 300 ? 300 : node.text.length * 24,
+      },
     };
     if (parentId) parsedNode.parentId = parentId;
     return parsedNode;
   }
-  console.error("failed to parse node", node);
+  console.error('failed to parse node', node);
   return undefined;
 }
 

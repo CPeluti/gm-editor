@@ -1,7 +1,12 @@
-import { BaseEdge, EdgeProps, getBezierPath, MarkerType, useInternalNode } from "@xyflow/react";
+import {
+  BaseEdge,
+  EdgeProps,
+  getBezierPath,
+  useInternalNode,
+} from '@xyflow/react';
 
-import { getEdgeParams } from "../utils/initialElements.ts";
-function OrDecomposition({ id, source, target, markerEnd, style }: EdgeProps) {
+import { getEdgeParams } from '../utils/initialElements.ts';
+function OrDecomposition({ source, target, style }: EdgeProps) {
   const sourceNode = useInternalNode(source);
   const targetNode = useInternalNode(target);
 
@@ -23,36 +28,41 @@ function OrDecomposition({ id, source, target, markerEnd, style }: EdgeProps) {
     targetY: ty,
   });
   const markerStyle = {
-    strokeWidth: "1px",
-    stroke: "rgb(177, 177, 183)",
-    fill: "rgb(177, 177, 183)"
-  }
-  const styleCustom = { ...style, stroke: "white", strokeWidth: 2 }
+    strokeWidth: '1px',
+    stroke: 'rgb(177, 177, 183)',
+    fill: 'rgb(177, 177, 183)',
+  };
+  const styleCustom = { ...style, stroke: 'white', strokeWidth: 2 };
   return (
     <>
       <svg style={{ position: 'absolute', top: 0, left: 0 }}>
         <defs>
-
           <marker
-            className={"react-flow__arrowhead"}
+            className={'react-flow__arrowhead'}
             id="arrow"
-            markerWidth="30.5"
-            markerHeight="30.5"
+            markerWidth="20.5"
+            markerHeight="20.5"
             viewBox="-10 -10 20 20"
             markerUnits="strokeWidth"
             orient="auto-start-reverse"
             refX="0"
-            refY="0">
+            refY="0"
+          >
             <polyline
               style={markerStyle}
               className="arrowclosed"
               strokeLinecap="round"
               strokeLinejoin="round"
-              points="-5,-4 0,0 -5,4 -5,-4"></polyline>
+              points="-5,-4 0,0 -5,4 -5,-4"
+            ></polyline>
           </marker>
         </defs>
       </svg>
-      <BaseEdge path={edgePath} markerEnd={"url(#arrow)"} style={styleCustom}></BaseEdge>
+      <BaseEdge
+        path={edgePath}
+        markerEnd={'url(#arrow)'}
+        style={styleCustom}
+      ></BaseEdge>
     </>
   );
 }
