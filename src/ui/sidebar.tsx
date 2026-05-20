@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { shallow } from 'zustand/shallow';
 import useStore, { RFState } from '../store';
 
@@ -20,7 +18,12 @@ export default function Sidebar() {
     toggleConnection,
   } = useStore(selector, shallow);
   return (
-    <aside className="text-white p-4 flex flex-col gap-3">
+    <aside
+      className="text-white p-4 flex flex-col gap-3"
+      style={{
+        backgroundColor: 'var(--vscode-editor-background)',
+      }}
+    >
       <button
         onClick={() => toggleCreationMode('Achieve')}
         className={`dndnode input ${currentMode == 'create' && nodeType == 'Achieve' ? 'bg-green-300' : 'bg-white'} text-black w-full h-10`}

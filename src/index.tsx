@@ -38,6 +38,7 @@ const selector = (state: RFState) => ({
   loadGoalModel: state.loadGoalModel,
   edgeType: state.edgeType,
   setError: state.setError,
+  parseReactFlowToNode: state.parseReactFlowToNode,
 });
 
 export default function Index() {
@@ -50,8 +51,8 @@ export default function Index() {
     addNode,
     currentMode,
     addConnection,
-    loadGoalModel,
     setError,
+    parseReactFlowToNode,
   } = useStore(selector, shallow);
 
   const onClick = useCallback(
@@ -72,17 +73,19 @@ export default function Index() {
   );
 
   return (
-    <>
-      <button onClick={() => loadGoalModel()}>teste</button>
+    <div className="flex flex-col">
+      {/* <button onClick={() => loadGoalModel()}>teste</button> */}
       <button
-        onClick={() =>
-          setError('9a952783-d786-409b-a5e7-039ab220442b', 'node', 'error')
-        }
+        onClick={() => {
+          setError('9a952783-d786-409b-a5e7-039ab220442b', 'node', 'error');
+          console.log(parseReactFlowToNode());
+        }}
       >
         teste2
       </button>
       <div
         style={{
+          backgroundColor: 'var(--vscode-editor-background)',
           width: '100vw',
           height: '100vh',
           color: 'black',
@@ -105,12 +108,12 @@ export default function Index() {
           fitView
           deleteKeyCode={['Backspace', 'Delete']}
         >
-          <Background />
+          <Background bgColor="var(--vscode-editor-background)" />
           <Controls />
           <MiniMap />
         </ReactFlow>
         <Sidebar />
       </div>
-    </>
+    </div>
   );
 }

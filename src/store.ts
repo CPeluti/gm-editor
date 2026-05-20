@@ -12,7 +12,11 @@ import {
   Connection,
 } from '@xyflow/react';
 import { createWithEqualityFn } from 'zustand/traditional';
-import { GoalModel, parseNodeToReactFlow } from './utils/goalModel';
+import {
+  GoalModel,
+  parseNodeToReactFlow,
+  parseReactflowToNode,
+} from './utils/goalModel';
 type nodes = 'Achieve' | 'Query' | 'Perform';
 type edgeType = 'Or' | 'And';
 
@@ -28,7 +32,8 @@ export type RFState = {
   addConnection: (connection: Connection) => void;
   toggleCreationMode: (type: nodes) => void;
   toggleConnection: (type: edgeType) => void;
-  loadGoalModel: () => object;
+  loadGoalModel: (model: string) => object;
+  parseReactFlowToNode: () => string;
   setError: (
     id: string,
     type: 'edge' | 'node',
@@ -128,23 +133,26 @@ const useStore = createWithEqualityFn<RFState>((set, get) => ({
       });
     }
   },
-
-  loadGoalModel: async () => {
+  parseReactFlowToNode: () => {
+    return parseReactflowToNode(get().nodes, get().edges);
+  },
+  loadGoalModel: async (model: string) => {
     //read file
     //TODO: Remove fetch when integrating to vscode.
-    const json = await fetch('/teste.json');
-    const gm = await json.json();
+    // const json = await fetch('/teste.json');
+    const gm = await JSON.parse(model);
+    const pistar = gm.tool == 'pistar.2.1.0';
     const parsedGm = GoalModel.parse(gm);
     //parse actors
     const actors: Array<Node> = parsedGm.actors
-      .map((el) => parseNodeToReactFlow(el))
+      .map((el) => parseNodeToReactFlow(el, pistar))
       .filter((el) => el != undefined);
     //parse goals and tasks
     let goals: Array<Node> = [];
     let tasks: Array<Node> = [];
     parsedGm.actors.forEach((actor) => {
       const nodes = actor.nodes
-        .map((el) => parseNodeToReactFlow(el, actor.id))
+        .map((el) => parseNodeToReactFlow(el, pistar, actor.id))
         .filter((el) => el != undefined);
       goals = nodes.filter((el) => el.type == 'istar.Goal');
       tasks = nodes.filter((el) => el.type == 'istar.Task');

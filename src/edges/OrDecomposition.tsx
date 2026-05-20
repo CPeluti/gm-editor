@@ -27,12 +27,17 @@ function OrDecomposition({ source, target, style }: EdgeProps) {
     targetX: tx,
     targetY: ty,
   });
+  const styleCustom = {
+    ...style,
+    stroke: 'var(--vscode-editor-foreground)',
+    strokeWidth: 2,
+  };
+
   const markerStyle = {
     strokeWidth: '1px',
-    stroke: 'rgb(177, 177, 183)',
-    fill: 'rgb(177, 177, 183)',
+    stroke: 'var(--vscode-editor-foreground)',
+    fill: 'var(--vscode-editor-foreground)',
   };
-  const styleCustom = { ...style, stroke: 'white', strokeWidth: 2 };
   return (
     <>
       <svg style={{ position: 'absolute', top: 0, left: 0 }}>

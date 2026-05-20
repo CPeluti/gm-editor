@@ -27,7 +27,12 @@ function AndDecomposition({ source, target, style }: EdgeProps) {
     targetX: tx,
     targetY: ty,
   });
-  const styleCustom = { ...style, stroke: 'white', strokeWidth: 2 };
+  const styleCustom = {
+    ...style,
+    stroke: 'var(--vscode-editor-foreground)',
+    strokeWidth: 2,
+  };
+
   return (
     <>
       <svg style={{ position: 'absolute', top: 0, left: 0 }}>
@@ -40,7 +45,7 @@ function AndDecomposition({ source, target, style }: EdgeProps) {
           >
             <path
               id="v-234"
-              stroke="white"
+              stroke="var(--vscode-editor-foreground)"
               fill="none"
               transform="rotate(180)"
               d="m 10,-6 l 0,12"
