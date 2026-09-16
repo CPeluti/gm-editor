@@ -20,12 +20,24 @@ import {
 type nodes = 'Achieve' | 'Query' | 'Perform';
 type edgeType = 'Or' | 'And';
 
+export interface DiagnosticItem {
+  message: string;
+  severity: 'error' | 'warning' | 'info';
+  range?: {
+    start: { line: number; character: number };
+    end: { line: number; character: number };
+  };
+  source?: string;
+  nodeId?: string;
+}
+
 export type RFState = {
   currentMode: 'none' | 'create' | 'edge';
   nodeType: nodes;
   edgeType: 'Or' | 'And';
   nodes: Node[];
   edges: Edge[];
+  diagnostics: DiagnosticItem[];
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   addNode: (position: XYPosition) => void;
@@ -39,6 +51,7 @@ export type RFState = {
     type: 'edge' | 'node',
     level: 'warning' | 'error',
   ) => void;
+  setDiagnostics: (diagnostics: DiagnosticItem[]) => void;
 };
 
 const useStore = createWithEqualityFn<RFState>((set, get) => ({
@@ -47,6 +60,7 @@ const useStore = createWithEqualityFn<RFState>((set, get) => ({
   edgeType: 'And',
   nodes: [],
   edges: [],
+  diagnostics: [],
   onNodesChange: (changes: NodeChange[]) => {
     set({
       nodes: applyNodeChanges(changes, get().nodes),
@@ -106,12 +120,12 @@ const useStore = createWithEqualityFn<RFState>((set, get) => ({
         nodes: get().nodes.map((node) =>
           node.id === id
             ? {
-                ...node,
-                data: {
-                  ...node.data,
-                  error: level,
-                },
-              }
+              ...node,
+              data: {
+                ...node.data,
+                error: level,
+              },
+            }
             : node,
         ),
       });
@@ -122,16 +136,54 @@ const useStore = createWithEqualityFn<RFState>((set, get) => ({
         edges: get().edges.map((edge) =>
           edge.id === id
             ? {
-                ...edge,
-                data: {
-                  ...edge.data,
-                  error: level,
-                },
-              }
+              ...edge,
+              data: {
+                ...edge.data,
+                error: level,
+              },
+            }
             : edge,
         ),
       });
     }
+  },
+  setDiagnostics: (diagnostics: DiagnosticItem[]) => {
+    const nodeErrorMap = new Map<
+      string,
+      { level: 'warning' | 'error'; messages: string[] }
+    >();
+
+    for (const diag of diagnostics) {
+      if (diag.nodeId) {
+        const level: 'warning' | 'error' =
+          diag.severity === 'error' ? 'error' : 'warning';
+        const existing = nodeErrorMap.get(diag.nodeId);
+        if (!existing) {
+          nodeErrorMap.set(diag.nodeId, { level, messages: [diag.message] });
+        } else {
+          if (level === 'error') {
+            existing.level = 'error';
+          }
+          existing.messages.push(diag.message);
+        }
+      }
+    }
+
+    set({
+      diagnostics,
+      nodes: get().nodes.map((node) => {
+        const err = nodeErrorMap.get(node.id);
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            error: err ? err.level : undefined,
+            errorMessage: err ? err.messages.join('\n') : undefined,
+            diagnostics: err ? err.messages : undefined,
+          },
+        };
+      }),
+    });
   },
   parseReactFlowToNode: () => {
     return parseReactflowToNode(get().nodes, get().edges);
@@ -158,6 +210,40 @@ const useStore = createWithEqualityFn<RFState>((set, get) => ({
       tasks = nodes.filter((el) => el.type == 'istar.Task');
     });
     const parsedNodes = [...actors, ...goals, ...tasks];
+
+    // Re-apply existing diagnostics if already received
+    const currentDiagnostics = get().diagnostics;
+    if (currentDiagnostics && currentDiagnostics.length > 0) {
+      const nodeErrorMap = new Map<
+        string,
+        { level: 'warning' | 'error'; messages: string[] }
+      >();
+      for (const diag of currentDiagnostics) {
+        if (diag.nodeId) {
+          const level: 'warning' | 'error' =
+            diag.severity === 'error' ? 'error' : 'warning';
+          const existing = nodeErrorMap.get(diag.nodeId);
+          if (!existing) {
+            nodeErrorMap.set(diag.nodeId, { level, messages: [diag.message] });
+          } else {
+            if (level === 'error') existing.level = 'error';
+            existing.messages.push(diag.message);
+          }
+        }
+      }
+      for (const node of parsedNodes) {
+        const err = nodeErrorMap.get(node.id);
+        if (err) {
+          node.data = {
+            ...node.data,
+            error: err.level,
+            errorMessage: err.messages.join('\n'),
+            diagnostics: err.messages,
+          };
+        }
+      }
+    }
+
     set({ nodes: parsedNodes });
     set({ edges: parsedGm.links });
   },

@@ -87,16 +87,15 @@ export function parseReactflowToNode(nodes: FlowNode[], edges: Edge[]): string {
 
   while (nodes.length) {
     nodes.forEach((node) => {
-      console.log(node);
-      const label = node.data.label;
-      delete node.data.label;
+      const { label, error, errorMessage, diagnostics, ...customProps } =
+        (node.data || {}) as any;
       const basicNode: goalModelNode = {
         id: node.id,
         text: label as string,
         type: node.type as string,
         x: node.position.x,
         y: node.position.y,
-        customProperties: node.data as Record<string, string>,
+        customProperties: customProps as Record<string, string>,
       };
       if (node.measured)
         parsedDisplay[node.id] = {
