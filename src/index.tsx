@@ -37,8 +37,6 @@ const selector = (state: RFState) => ({
   addConnection: state.addConnection,
   loadGoalModel: state.loadGoalModel,
   edgeType: state.edgeType,
-  setError: state.setError,
-  parseReactFlowToNode: state.parseReactFlowToNode,
 });
 
 export default function Index() {
@@ -51,8 +49,6 @@ export default function Index() {
     addNode,
     currentMode,
     addConnection,
-    setError,
-    parseReactFlowToNode,
   } = useStore(selector, shallow);
 
   const onClick = useCallback(
@@ -74,15 +70,6 @@ export default function Index() {
 
   return (
     <div className="flex flex-col">
-      {/* <button onClick={() => loadGoalModel()}>teste</button> */}
-      <button
-        onClick={() => {
-          setError('9a952783-d786-409b-a5e7-039ab220442b', 'node', 'error');
-          console.log(parseReactFlowToNode());
-        }}
-      >
-        teste2
-      </button>
       <div
         style={{
           backgroundColor: 'var(--vscode-editor-background)',

@@ -12,37 +12,29 @@ import vscode from '../vscode';
 export default function App() {
   const selector = (state: RFState) => ({
     loadGoalModel: state.loadGoalModel,
+    setDiagnostics: state.setDiagnostics,
   });
-  const { loadGoalModel } = useStore(selector, shallow);
-
-  // webview-ui/src/App.tsx
-
-  // const handleSave = (content: string) => {
-  //   // Enviar para a extensão
-  //   vscode.postMessage({
-  //     command: 'save',
-  //     content,
-  //     path: '/meu-arquivo.txt',
-  //   });
-  // };
-
-  // Receber mensagens da extensão
+  const { loadGoalModel, setDiagnostics } = useStore(selector, shallow);
 
   useEffect(() => {
     console.log('enviando ready...'); // aparece no DevTools da webview
     vscode.postMessage({ command: 'ready' });
   }, []);
+
   useEffect(() => {
     const handler = (event: MessageEvent) => {
       const msg = event.data;
       if (msg.command === 'load') {
-        console.log(msg);
+        console.log('Received load in React editor:', msg);
         loadGoalModel(msg.content);
+      } else if (msg.command === 'diagnostics') {
+        console.log('Received diagnostics in React editor:', msg.diagnostics);
+        setDiagnostics(msg.diagnostics);
       }
     };
     window.addEventListener('message', handler);
     return () => window.removeEventListener('message', handler);
-  }, []);
+  }, [loadGoalModel, setDiagnostics]);
 
   return (
     <ReactFlowProvider>
